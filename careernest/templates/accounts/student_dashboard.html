@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard - CareerNest{% endblock %}
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-lg-3 mb-4">
+            <div class="dash-sidebar">
+                <div class="px-3 mb-3">
+                    <h6 class="fw-bold text-primary"><i class="bi bi-person-circle"></i> {{ user.username }}</h6>
+                    <small class="text-muted">Student</small>
+                </div>
+                <hr class="my-2">
+                <nav class="nav flex-column">
+                    <a class="nav-link active" href="#"><i class="bi bi-speedometer2"></i> Dashboard</a>
+                    <a class="nav-link" href="{% url 'my_applications' %}"><i class="bi bi-file-earmark-text"></i> My Applications</a>
+                    <a class="nav-link" href="{% url 'internship_list' %}"><i class="bi bi-search"></i> Browse Internships</a>
+                    <a class="nav-link" href="{% url 'profile' %}"><i class="bi bi-person"></i> Profile</a>
+                    <a class="nav-link" href="{% url 'edit_profile' %}"><i class="bi bi-gear"></i> Settings</a>
+                </nav>
+            </div>
+        </div>
+        <div class="col-lg-9">
+            <h4 class="fw-bold mb-4"><i class="bi bi-grid-fill"></i> Student Dashboard</h4>
+            <div class="row g-3 mb-4">
+                <div class="col-md-3 fade-in">
+                    <div class="card card-dashboard shadow-sm border-0">
+                        <div class="card-body">
+                            <h3>{{ total_apps }}</h3>
+                            <p class="text">Total Applications</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 fade-in">
+                    <div class="card card-dashboard students shadow-sm border-0">
+                        <div class="card-body">
+                            <h3>{{ pending }}</h3>
+                            <p class="text">Pending</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 fade-in">
+                    <div class="card card-dashboard internships shadow-sm border-0">
+                        <div class="card-body">
+                            <h3>{{ accepted }}</h3>
+                            <p class="text">Accepted</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 fade-in">
+                    <div class="card card-dashboard applications shadow-sm border-0">
+                        <div class="card-body">
+                            <h3>{{ rejected }}</h3>
+                            <p class="text">Rejected</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm border-0 fade-in">
+                <div class="card-header bg-white fw-semibold d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-clock-history"></i> Recent Applications</span>
+                    <a href="{% url 'my_applications' %}" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead><tr><th>Internship</th><th>Company</th><th>Status</th><th>Date</th></tr></thead>
+                            <tbody>
+                                {% for app in applications %}
+                                <tr>
+                                    <td class="fw-semibold">{{ app.internship.title }}</td>
+                                    <td>{{ app.internship.company.company_name }}</td>
+                                    <td>
+                                        {% if app.status == "Pending" %}<span class="badge bg-warning text-dark">Pending</span>
+                                        {% elif app.status == "Accepted" %}<span class="badge bg-success">Accepted</span>
+                                        {% elif app.status == "Rejected" %}<span class="badge bg-danger">Rejected</span>{% endif %}
+                                    </td>
+                                    <td>{{ app.applied_date|date:"M d, Y" }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr><td colspan="4" class="text-center py-4"><div class="py-3">📋 No applications yet. <a href="{% url 'internship_list' %}">Browse internships</a></div></td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

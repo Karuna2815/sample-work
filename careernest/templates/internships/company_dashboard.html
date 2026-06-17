@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold mb-0"><i class="bi bi-building"></i> {{ user.company.company_name }}</h3>
+        <div>
+            <a href="{% url 'create_internship' %}" class="btn btn-primary rounded-pill px-4 me-2">
+                <i class="bi bi-plus-circle"></i> Post Internship
+            </a>
+            <a href="{% url 'company_applications' %}" class="btn btn-outline-primary rounded-pill px-3">
+                <i class="bi bi-people"></i> Applicants
+            </a>
+        </div>
+    </div>
+
+    {% if not user.company.is_approved %}
+    <div class="alert alert-warning">
+        <i class="bi bi-exclamation-triangle"></i> Pending admin approval. You cannot post internships yet.
+    </div>
+    {% endif %}
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-3 fade-in">
+            <div class="card card-dashboard internships shadow-sm border-0">
+                <div class="card-body">
+                    <h3>{{ internships.count }}</h3>
+                    <p class="text">Active Internships</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 fade-in">
+            <div class="card card-dashboard applications shadow-sm border-0">
+                <div class="card-body">
+                    <h3>{{ total_apps }}</h3>
+                    <p class="text">Total Applications</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 fade-in">
+            <div class="card card-dashboard shadow-sm border-0" style="border-left-color: var(--highlight);">
+                <div class="card-body">
+                    <h3>{{ pending }}</h3>
+                    <p class="text">Pending Review</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 fade-in">
+            <div class="card card-dashboard shadow-sm border-0" style="border-left-color: var(--accent);">
+                <div class="card-body">
+                    <h3>{{ accepted }}</h3>
+                    <p class="text">Accepted</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow border-0 mb-4 fade-in">
+        <div class="card-header bg-white fw-semibold d-flex justify-content-between">
+            <span><i class="bi bi-people"></i> Recent Applications</span>
+            <a href="{% url 'company_applications' %}" class="btn btn-sm btn-outline-primary rounded-pill">View All</a>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead><tr><th>Student</th><th>Internship</th><th>Status</th><th>Date</th><th>Action</th></tr></thead>
+                    <tbody>
+                        {% for app in applications|slice:":8" %}
+                        <tr>
+                            <td class="fw-semibold">{{ app.student.username }}</td>
+                            <td>{{ app.internship.title }}</td>
+                            <td>
+                                {% if app.status == "Pending" %}<span class="badge bg-warning text-dark">Pending</span>
+                                {% elif app.status == "Accepted" %}<span class="badge bg-success">Accepted</span>
+                                {% elif app.status == "Rejected" %}<span class="badge bg-danger">Rejected</span>{% endif %}
+                            </td>
+                            <td>{{ app.applied_date|date:"M d" }}</td>
+                            <td>
+                                <a href="{% url 'update_application_status' app.id 'Accepted' %}" class="btn btn-sm btn-success"><i class="bi bi-check-lg"></i></a>
+                                <a href="{% url 'update_application_status' app.id 'Rejected' %}" class="btn btn-sm btn-danger"><i class="bi bi-x-lg"></i></a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="5" class="text-center text-muted py-4">
+                            <div class="py-3">📋 No applications received yet</div>
+                        </td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow border-0 fade-in">
+        <div class="card-header bg-white fw-semibold">
+            <span><i class="bi bi-briefcase"></i> My Internships</span>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead><tr><th>Title</th><th>Type</th><th>Location</th><th>Applicants</th><th>Posted</th></tr></thead>
+                    <tbody>
+                        {% for internship in internships %}
+                        <tr>
+                            <td class="fw-semibold">{{ internship.title }}</td>
+                            <td><span class="badge bg-light text-dark">{{ internship.get_internship_type_display }}</span></td>
+                            <td>{{ internship.location }}</td>
+                            <td>{{ internship.applications.count }}</td>
+                            <td>{{ internship.created_at|date:"M d, Y" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="5" class="text-center text-muted py-4">
+                            <div class="py-3">📭 No internships posted yet. <a href="{% url 'create_internship' %}">Post one now</a></div>
+                        </td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0"><i class="bi bi-list-ul text-primary"></i> Available Internships</h2>
+        {% if user.is_authenticated and user.company %}
+        <a href="{% url 'create_internship' %}" class="btn btn-primary shadow-sm rounded-pill px-4">
+            <i class="bi bi-plus-circle"></i> Post Internship
+        </a>
+        {% endif %}
+    </div>
+
+    <div class="card shadow-sm border-0 mb-4 fade-in">
+        <div class="card-body">
+            <form method="GET">
+                <div class="row g-2">
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold text-muted"><i class="bi bi-search"></i> Search</label>
+                        <input type="text" name="q" class="form-control" placeholder="Title, description or skills..." value="{{ query }}">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small fw-semibold text-muted"><i class="bi bi-geo-alt"></i> Location</label>
+                        <select name="location" class="form-select">
+                            <option value="">All</option>
+                            {% for loc in locations %}
+                            <option value="{{ loc }}" {% if location == loc %}selected{% endif %}>{{ loc }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small fw-semibold text-muted"><i class="bi bi-building"></i> Company</label>
+                        <select name="company" class="form-select">
+                            <option value="">All</option>
+                            {% for c in companies_list %}
+                            <option value="{{ c }}" {% if company == c %}selected{% endif %}>{{ c }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small fw-semibold text-muted"><i class="bi bi-laptop"></i> Type</label>
+                        <select name="type" class="form-select">
+                            <option value="">All</option>
+                            <option value="remote" {% if internship_type == 'remote' %}selected{% endif %}>Remote</option>
+                            <option value="onsite" {% if internship_type == 'onsite' %}selected{% endif %}>On-site</option>
+                            <option value="hybrid" {% if internship_type == 'hybrid' %}selected{% endif %}>Hybrid</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end gap-1">
+                        <button class="btn btn-primary w-100"><i class="bi bi-funnel"></i> Filter</button>
+                        <a href="{% url 'internship_list' %}" class="btn btn-outline-secondary" title="Reset"><i class="bi bi-x-circle"></i></a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% if query or location or company or internship_type %}
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <p class="text-muted mb-0"><i class="bi bi-funnel"></i> Filtered results</p>
+        <span class="badge bg-primary rounded-pill">{{ internships.count }} found</span>
+    </div>
+    {% endif %}
+
+    <div class="row">
+        {% for internship in internships %}
+        <div class="col-md-4 mb-4 fade-in">
+            <div class="card card-scale shadow-sm h-100 border-0">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title fw-bold mb-0">{{ internship.title }}</h5>
+                        {% if internship.internship_type == 'remote' %}
+                        <span class="badge bg-success">Remote</span>
+                        {% elif internship.internship_type == 'hybrid' %}
+                        <span class="badge bg-warning text-dark">Hybrid</span>
+                        {% else %}
+                        <span class="badge bg-primary">On-site</span>
+                        {% endif %}
+                    </div>
+                    <p class="text-muted small mb-1"><i class="bi bi-building"></i> {{ internship.company.company_name }}</p>
+                    <p class="text-muted small mb-1"><i class="bi bi-geo-alt"></i> {{ internship.location }}</p>
+                    {% if internship.skills_required %}
+                    <div class="mb-2">
+                        {% for skill in internship.skills_required|slice:":60" %}{% if not forloop.first and forloop.counter0|divisibleby:20 %}<br>{% endif %}{% endfor %}
+                        {% for s in internship.skills_required|slice:":100" %}
+                        {% endfor %}
+                        {% for s in internship.skills_required|truncatechars:100 %}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    <p class="card-text flex-grow-1 small">{{ internship.description|truncatechars:100 }}</p>
+                    <a href="{% url 'internship_detail' internship.id %}" class="btn btn-outline-primary btn-sm mt-auto rounded-pill w-100">
+                        View Details & Apply <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <div class="display-1 mb-3">🔍</div>
+            <h5 class="fw-bold text-muted">No internships found</h5>
+            <p class="text-muted">Try adjusting your search filters or check back later.</p>
+            <a href="{% url 'internship_list' %}" class="btn btn-primary rounded-pill px-4 mt-2"><i class="bi bi-arrow-clockwise"></i> Reset Filters</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

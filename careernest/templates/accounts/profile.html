@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center mt-4">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center py-3">
+                <h4 class="mb-0"><i class="bi bi-person-fill"></i> My Profile</h4>
+                <a href="{% url 'edit_profile' %}" class="btn btn-light btn-sm">
+                    <i class="bi bi-pencil-square"></i> Edit
+                </a>
+            </div>
+            <div class="card-body p-4">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong><i class="bi bi-person"></i> Username:</strong> {{ profile.user.username }}</p>
+                        <p><strong><i class="bi bi-envelope"></i> Email:</strong> {{ profile.user.email }}</p>
+                        <p><strong><i class="bi bi-book"></i> Education:</strong> {{ profile.education|default:"Not specified" }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong><i class="bi bi-chat-dots"></i> Bio:</strong> {{ profile.bio|default:"No bio added" }}</p>
+                        <p><strong><i class="bi bi-gear"></i> Skills:</strong> {{ profile.skills|default:"Not specified" }}</p>
+                    </div>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span>
+                        <strong><i class="bi bi-file-earmark-text"></i> Resume:</strong>
+                        {% if profile.resume %}
+                            <a href="{{ profile.resume.url }}" class="btn btn-success btn-sm ms-2" download>
+                                <i class="bi bi-download"></i> Download Resume
+                            </a>
+                        {% else %}
+                            <span class="text-danger ms-2">No resume uploaded</span>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

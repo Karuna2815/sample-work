@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}Contact - CareerNest{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center fade-in">
+            <h1 class="fw-bold mb-3"><i class="bi bi-envelope"></i> Contact Us</h1>
+            <p class="lead text-muted">Have questions? We'd love to hear from you.</p>
+        </div>
+    </div>
+    <div class="row mt-5 g-4 justify-content-center">
+        <div class="col-md-5 fade-in">
+            <div class="card shadow-sm border-0 p-4 h-100">
+                <h5 class="fw-bold mb-4"><i class="bi bi-info-circle text-primary"></i> Get in Touch</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-3"><i class="bi bi-geo-alt text-primary me-2"></i> Kathmandu, Nepal</li>
+                    <li class="mb-3"><i class="bi bi-envelope text-primary me-2"></i> info@careernest.com</li>
+                    <li class="mb-3"><i class="bi bi-telephone text-primary me-2"></i> +977-1-4XXXXXX</li>
+                    <li class="mb-3"><i class="bi bi-clock text-primary me-2"></i> Sun - Fri: 9:00 AM - 6:00 PM</li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-5 fade-in">
+            <div class="card shadow-sm border-0 p-4">
+                <h5 class="fw-bold mb-4"><i class="bi bi-send text-primary"></i> Send a Message</h5>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <input type="text" name="name" class="form-control" placeholder="Your Name" required>
+                    </div>
+                    <div class="mb-3">
+                        <input type="email" name="email" class="form-control" placeholder="Your Email" required>
+                    </div>
+                    <div class="mb-3">
+                        <textarea name="message" class="form-control" rows="4" placeholder="Your Message" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100"><i class="bi bi-send"></i> Send Message</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
