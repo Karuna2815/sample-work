@@ -6,60 +6,62 @@
         <div class="col-lg-3 mb-4">
             <div class="dash-sidebar">
                 <div class="px-3 mb-3">
-                    <h6 class="fw-bold text-primary"><i class="bi bi-person-circle"></i> {{ user.username }}</h6>
+                    <h6 class="fw-bold mb-0">{{ user.username }}</h6>
                     <small class="text-muted">Student</small>
                 </div>
                 <hr class="my-2">
                 <nav class="nav flex-column">
-                    <a class="nav-link active" href="#"><i class="bi bi-speedometer2"></i> Dashboard</a>
-                    <a class="nav-link" href="{% url 'my_applications' %}"><i class="bi bi-file-earmark-text"></i> My Applications</a>
-                    <a class="nav-link" href="{% url 'internship_list' %}"><i class="bi bi-search"></i> Browse Internships</a>
-                    <a class="nav-link" href="{% url 'profile' %}"><i class="bi bi-person"></i> Profile</a>
-                    <a class="nav-link" href="{% url 'edit_profile' %}"><i class="bi bi-gear"></i> Settings</a>
+                    <a class="nav-link active" href="#">Dashboard</a>
+                    <a class="nav-link" href="{% url 'my_applications' %}">My Applications</a>
+                    <a class="nav-link" href="{% url 'internship_list' %}">Browse Internships</a>
+                    <a class="nav-link" href="{% url 'profile' %}">Profile</a>
+                    <a class="nav-link" href="{% url 'edit_profile' %}">Settings</a>
                 </nav>
             </div>
         </div>
         <div class="col-lg-9">
-            <h4 class="fw-bold mb-4"><i class="bi bi-grid-fill"></i> Student Dashboard</h4>
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <div>
+                    <h4 class="fw-bold mb-0">Welcome back, {{ user.username }}!</h4>
+                    <p class="text-muted mb-0" style="font-size: 0.9rem;">Here's your application overview.</p>
+                </div>
+            </div>
+
             <div class="row g-3 mb-4">
-                <div class="col-md-3 fade-in">
-                    <div class="card card-dashboard shadow-sm border-0">
-                        <div class="card-body">
-                            <h3>{{ total_apps }}</h3>
-                            <p class="text">Total Applications</p>
-                        </div>
+                <div class="col-md-3 fade-up">
+                    <div class="dash-stat">
+                        <div class="icon-circle" style="background: #EFF6FF; color: var(--primary);"><i class="bi bi-send"></i></div>
+                        <h3>{{ total_apps }}</h3>
+                        <div class="label">Total Applications</div>
                     </div>
                 </div>
-                <div class="col-md-3 fade-in">
-                    <div class="card card-dashboard students shadow-sm border-0">
-                        <div class="card-body">
-                            <h3>{{ pending }}</h3>
-                            <p class="text">Pending</p>
-                        </div>
+                <div class="col-md-3 fade-up">
+                    <div class="dash-stat">
+                        <div class="icon-circle" style="background: #FEF3C7; color: var(--highlight);"><i class="bi bi-clock"></i></div>
+                        <h3>{{ pending }}</h3>
+                        <div class="label">Pending</div>
                     </div>
                 </div>
-                <div class="col-md-3 fade-in">
-                    <div class="card card-dashboard internships shadow-sm border-0">
-                        <div class="card-body">
-                            <h3>{{ accepted }}</h3>
-                            <p class="text">Accepted</p>
-                        </div>
+                <div class="col-md-3 fade-up">
+                    <div class="dash-stat">
+                        <div class="icon-circle" style="background: #D1FAE5; color: var(--accent);"><i class="bi bi-check-circle"></i></div>
+                        <h3>{{ accepted }}</h3>
+                        <div class="label">Accepted</div>
                     </div>
                 </div>
-                <div class="col-md-3 fade-in">
-                    <div class="card card-dashboard applications shadow-sm border-0">
-                        <div class="card-body">
-                            <h3>{{ rejected }}</h3>
-                            <p class="text">Rejected</p>
-                        </div>
+                <div class="col-md-3 fade-up">
+                    <div class="dash-stat">
+                        <div class="icon-circle" style="background: #FEE2E2; color: var(--danger);"><i class="bi bi-x-circle"></i></div>
+                        <h3>{{ rejected }}</h3>
+                        <div class="label">Rejected</div>
                     </div>
                 </div>
             </div>
 
-            <div class="card shadow-sm border-0 fade-in">
+            <div class="card mb-4 fade-up">
                 <div class="card-header bg-white fw-semibold d-flex justify-content-between align-items-center">
-                    <span><i class="bi bi-clock-history"></i> Recent Applications</span>
-                    <a href="{% url 'my_applications' %}" class="btn btn-sm btn-outline-primary">View All</a>
+                    <span>Recent Applications</span>
+                    <a href="{% url 'my_applications' %}" class="btn btn-sm btn-outline-primary rounded-pill">View All</a>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
@@ -78,13 +80,40 @@
                                     <td>{{ app.applied_date|date:"M d, Y" }}</td>
                                 </tr>
                                 {% empty %}
-                                <tr><td colspan="4" class="text-center py-4"><div class="py-3">📋 No applications yet. <a href="{% url 'internship_list' %}">Browse internships</a></div></td></tr>
+                                <tr><td colspan="4" class="text-center py-4"><div class="empty-state py-2">📋 No applications yet. <a href="{% url 'internship_list' %}">Browse internships</a></div></td></tr>
                                 {% endfor %}
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
+
+            {% if recommended %}
+            <div class="fade-up">
+                <h5 class="fw-bold mb-3">Recommended for You</h5>
+                <div class="row g-3">
+                    {% for intern in recommended %}
+                    <div class="col-md-6">
+                        <div class="internship-card h-100">
+                            <div class="d-flex align-items-start gap-3 mb-2">
+                                <div class="company-logo" style="width: 42px; height: 42px; font-size: 1rem;">{{ intern.company.company_name|first|upper }}</div>
+                                <div>
+                                    <h6 class="card-title mb-0" style="font-size: 0.95rem;">{{ intern.title }}</h6>
+                                    <div class="company-name">{{ intern.company.company_name }}</div>
+                                </div>
+                            </div>
+                            <div class="d-flex gap-2 mb-2">
+                                {% if intern.internship_type == 'remote' %}<span class="badge bg-success">Remote</span>
+                                {% elif intern.internship_type == 'hybrid' %}<span class="badge bg-warning text-dark">Hybrid</span>
+                                {% else %}<span class="badge bg-primary">On-site</span>{% endif %}
+                            </div>
+                            <a href="{% url 'internship_detail' intern.pk %}" class="btn btn-primary btn-sm w-100">Apply Now</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>

@@ -1,64 +1,36 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="row justify-content-center mt-4">
-    <div class="col-md-6">
-        <div class="card shadow">
-            <div class="card-header bg-primary text-white text-center py-3">
-                <h4 class="mb-0"><i class="bi bi-building"></i> Company Registration</h4>
-            </div>
-            <div class="card-body p-4">
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card p-4" style="border-top: 4px solid var(--primary);">
+                <div class="text-center mb-4">
+                    <h4 class="fw-bold mb-1">Company Registration</h4>
+                    <p class="text-muted mb-0" style="font-size: 0.9rem;">Register your company to post internships.</p>
+                </div>
                 <form method="POST">
                     {% csrf_token %}
-                    {% if form.non_field_errors %}
-                    <div class="alert alert-danger">
-                        {% for error in form.non_field_errors %}
-                            {{ error }}
-                        {% endfor %}
-                    </div>
-                    {% endif %}
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Username</label>
-                        <input type="text" name="username" class="form-control" placeholder="Choose a username" value="{{ form.username.value|default:'' }}" required>
-                        {% for error in form.username.errors %}
-                        <div class="text-danger small">{{ error }}</div>
-                        {% endfor %}
+                        <label class="form-label">Company Name</label>
+                        <input type="text" name="company_name" class="form-control" placeholder="Your company name" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Email</label>
-                        <input type="email" name="email" class="form-control" placeholder="Company email" value="{{ form.email.value|default:'' }}" required>
-                        {% for error in form.email.errors %}
-                        <div class="text-danger small">{{ error }}</div>
-                        {% endfor %}
+                        <label class="form-label">Username</label>
+                        <input type="text" name="username" class="form-control" placeholder="Choose a username" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Password</label>
+                        <label class="form-label">Email</label>
+                        <input type="email" name="email" class="form-control" placeholder="Company email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
                         <input type="password" name="password" class="form-control" placeholder="Create a password" required>
-                        {% for error in form.password.errors %}
-                        <div class="text-danger small">{{ error }}</div>
-                        {% endfor %}
                     </div>
-                    <hr>
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Company Name</label>
-                        <input type="text" name="company_name" class="form-control" placeholder="Enter company name" value="{{ form.company_name.value|default:'' }}" required>
-                        {% for error in form.company_name.errors %}
-                        <div class="text-danger small">{{ error }}</div>
-                        {% endfor %}
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Description</label>
-                        <textarea name="description" class="form-control" rows="4" placeholder="Describe your company...">{{ form.description.value|default:'' }}</textarea>
-                        {% for error in form.description.errors %}
-                        <div class="text-danger small">{{ error }}</div>
-                        {% endfor %}
-                    </div>
-                    <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">
-                        <i class="bi bi-building-add"></i> Register Company
-                    </button>
+                    <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">Register Company</button>
                 </form>
-                <p class="text-center mt-3 mb-0">
-                    Already have an account? <a href="{% url 'login' %}">Login here</a>
-                </p>
+                <div class="text-center mt-3">
+                    <p class="small mb-0">Already registered? <a href="{% url 'login' %}">Login</a></p>
+                </div>
             </div>
         </div>
     </div>

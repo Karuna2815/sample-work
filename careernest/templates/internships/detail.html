@@ -1,99 +1,85 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container py-4">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{% url 'internship_list' %}">Internships</a></li>
-                    <li class="breadcrumb-item active">{{ internship.title|truncatechars:40 }}</li>
-                </ol>
-            </nav>
 
-            <div class="card shadow border-0">
-                <div class="card-body p-4">
-                    <div class="d-flex justify-content-between align-items-start mb-3">
+<section class="py-4">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'internship_list' %}">Internships</a></li>
+                <li class="breadcrumb-item active">{{ internship.title }}</li>
+            </ol>
+        </nav>
+
+        <div class="card p-4 fade-up">
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div class="d-flex align-items-start gap-3 mb-3">
+                        <div class="company-logo" style="width: 56px; height: 56px; font-size: 1.3rem;">{{ internship.company.company_name|first|upper }}</div>
                         <div>
                             <h3 class="fw-bold mb-1">{{ internship.title }}</h3>
-                            <p class="text-muted mb-0"><i class="bi bi-building"></i> {{ internship.company.company_name }}</p>
+                            <p class="text-muted mb-2" style="font-size: 1rem;">{{ internship.company.company_name }} &middot; {{ internship.location }}</p>
+                            <div class="d-flex flex-wrap gap-2 mb-2">
+                                {% if internship.internship_type == 'remote' %}
+                                <span class="badge bg-success fs-6 px-3 py-2">Remote</span>
+                                {% elif internship.internship_type == 'hybrid' %}
+                                <span class="badge bg-warning text-dark fs-6 px-3 py-2">Hybrid</span>
+                                {% else %}
+                                <span class="badge bg-primary fs-6 px-3 py-2">On-site</span>
+                                {% endif %}
+                                {% if internship.stipend %}
+                                <span class="badge bg-light text-dark border fs-6 px-3 py-2">${{ internship.stipend }}</span>
+                                {% endif %}
+                                {% if internship.duration %}
+                                <span class="badge bg-light text-dark border fs-6 px-3 py-2">{{ internship.duration }}</span>
+                                {% endif %}
+                            </div>
                         </div>
-                        {% if internship.internship_type == 'remote' %}
-                        <span class="badge fs-6 px-3 py-2 bg-success">Remote</span>
-                        {% elif internship.internship_type == 'hybrid' %}
-                        <span class="badge fs-6 px-3 py-2 bg-warning text-dark">Hybrid</span>
-                        {% else %}
-                        <span class="badge fs-6 px-3 py-2 bg-primary">On-site</span>
-                        {% endif %}
                     </div>
-
-                    <div class="row g-3 mb-4">
-                        <div class="col-sm-6">
-                            <div class="d-flex align-items-center text-muted small">
-                                <i class="bi bi-geo-alt me-2"></i> {{ internship.location }}
-                            </div>
+                    <hr>
+                    <h5 class="fw-bold">Description</h5>
+                    <p class="text-muted" style="line-height: 1.8;">{{ internship.description|linebreaks }}</p>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card bg-light border-0 p-4">
+                        <h6 class="fw-bold mb-3">Internship Overview</h6>
+                        <div class="d-flex flex-column gap-3">
+                            <div><small class="text-muted d-block">Location</small><span class="fw-semibold">{{ internship.location }}</span></div>
+                            <div><small class="text-muted d-block">Type</small><span class="fw-semibold">{{ internship.get_internship_type_display }}</span></div>
+                            {% if internship.duration %}
+                            <div><small class="text-muted d-block">Duration</small><span class="fw-semibold">{{ internship.duration }}</span></div>
+                            {% endif %}
+                            {% if internship.stipend %}
+                            <div><small class="text-muted d-block">Stipend</small><span class="fw-semibold" style="color: var(--accent);">${{ internship.stipend }}</span></div>
+                            {% endif %}
+                            <div><small class="text-muted d-block">Posted by</small><span class="fw-semibold">{{ internship.company.company_name }}</span></div>
                         </div>
-                        <div class="col-sm-6">
-                            <div class="d-flex align-items-center text-muted small">
-                                <i class="bi bi-calendar me-2"></i> Posted {{ internship.created_at|date:"M d, Y" }}
-                            </div>
-                        </div>
-                        {% if internship.duration %}
-                        <div class="col-sm-6">
-                            <div class="d-flex align-items-center text-muted small">
-                                <i class="bi bi-clock me-2"></i> {{ internship.duration }}
-                            </div>
-                        </div>
-                        {% endif %}
-                        {% if internship.stipend %}
-                        <div class="col-sm-6">
-                            <div class="d-flex align-items-center text-muted small">
-                                <i class="bi bi-cash me-2"></i> {{ internship.stipend }}
-                            </div>
-                        </div>
-                        {% endif %}
-                    </div>
-
-                    {% if skills_list %}
-                    <div class="mb-4">
-                        <h6 class="fw-bold"><i class="bi bi-gear"></i> Skills Required</h6>
-                        <div class="d-flex flex-wrap gap-2 mt-2">
-                            {% for skill in skills_list %}
-                            <span class="badge bg-light text-dark px-3 py-2 border">{{ skill }}</span>
+                        <hr>
+                        {% if internship.skills_required %}
+                        <h6 class="fw-bold mb-2">Skills Required</h6>
+                        <div class="d-flex flex-wrap gap-1">
+                            {% for skill in internship.skills_list %}
+                            <span class="badge" style="background: #EFF6FF; color: var(--primary); padding: 0.4rem 0.75rem;">{{ skill }}</span>
                             {% endfor %}
                         </div>
-                    </div>
-                    {% endif %}
-
-                    <hr>
-
-                    <h6 class="fw-bold"><i class="bi bi-file-text"></i> Description</h6>
-                    <p class="text-muted" style="white-space: pre-line;">{{ internship.description }}</p>
-                </div>
-
-                <div class="card-footer bg-white border-top d-flex justify-content-between align-items-center py-3 px-4">
-                    <a href="{% url 'internship_list' %}" class="btn btn-outline-secondary rounded-pill">
-                        <i class="bi bi-arrow-left"></i> Back
-                    </a>
-                    <div>
-                        {% if user.is_authenticated and not user.company and not user.is_staff %}
-                            {% if has_applied %}
-                                <button class="btn btn-success rounded-pill px-4" disabled>
-                                    <i class="bi bi-check-circle"></i> Already Applied
-                                </button>
-                            {% else %}
-                                <a href="{% url 'apply_internship' internship.pk %}" class="btn btn-success rounded-pill px-4">
-                                    <i class="bi bi-send"></i> Apply Now
-                                </a>
-                            {% endif %}
-                        {% elif not user.is_authenticated %}
-                            <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-primary rounded-pill px-4">
-                                <i class="bi bi-box-arrow-in-right"></i> Login to Apply
-                            </a>
+                        <hr>
                         {% endif %}
+                        <div class="d-grid">
+                            {% if user.is_authenticated and not user.company and not user.is_staff %}
+                                {% if has_applied %}
+                                <button class="btn btn-success" disabled><i class="bi bi-check-circle"></i> Already Applied</button>
+                                {% else %}
+                                <a href="{% url 'apply_internship' internship.pk %}" class="btn btn-success"><i class="bi bi-send me-1"></i> Apply Now</a>
+                                {% endif %}
+                            {% elif not user.is_authenticated %}
+                                <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-primary"><i class="bi bi-box-arrow-in-right me-1"></i> Login to Apply</a>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</section>
+
 {% endblock %}

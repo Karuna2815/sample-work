@@ -1,85 +1,129 @@
 {% extends 'base.html' %}
+{% block title %}Admin Dashboard - CareerNest{% endblock %}
 {% block content %}
-<div class="container py-4">
-    <h3 class="fw-bold mb-4"><i class="bi bi-shield-lock"></i> Admin Dashboard</h3>
 
-    <div class="row g-3 mb-4">
-        <div class="col-md-3 fade-in">
-            <div class="card card-dashboard students shadow-sm border-0">
-                <div class="card-body">
-                    <h3>{{ total_students }}</h3>
-                    <p class="text">Total Users</p>
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-lg-3 mb-4">
+            <div class="dash-sidebar">
+                <div class="px-3 mb-3">
+                    <h6 class="fw-bold mb-0">Admin</h6>
+                    <small class="text-muted">Administrator</small>
                 </div>
+                <hr class="my-2">
+                <nav class="nav flex-column">
+                    <a class="nav-link active" href="#">Dashboard</a>
+                    <a class="nav-link" href="{% url 'admin_applications' %}">Applications</a>
+                    <a class="nav-link" href="/admin/">Django Admin</a>
+                </nav>
             </div>
         </div>
-        <div class="col-md-3 fade-in">
-            <div class="card card-dashboard internships shadow-sm border-0">
-                <div class="card-body">
-                    <h3>{{ total_internships }}</h3>
-                    <p class="text">Internships</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 fade-in">
-            <div class="card card-dashboard applications shadow-sm border-0">
-                <div class="card-body">
-                    <h3>{{ total_applications }}</h3>
-                    <p class="text">Applications</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 fade-in">
-            <div class="card shadow-sm border-0" style="border-left: 4px solid #8B5CF6;">
-                <div class="card-body">
-                    <h3>{{ companies.count }}</h3>
-                    <p class="text">Companies</p>
-                </div>
-            </div>
-        </div>
-    </div>
+        <div class="col-lg-9">
+            <h4 class="fw-bold mb-4">Admin Dashboard</h4>
 
-    <div class="card shadow border-0 fade-in">
-        <div class="card-header bg-white fw-semibold d-flex justify-content-between align-items-center">
-            <span><i class="bi bi-building"></i> Company Approvals</span>
-        </div>
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead><tr><th>Company</th><th>User</th><th>Status</th><th>Action</th></tr></thead>
-                    <tbody>
-                        {% for company in companies %}
-                        <tr>
-                            <td class="fw-semibold">{{ company.company_name }}</td>
-                            <td>{{ company.user.username }}</td>
-                            <td>
-                                {% if company.is_approved %}
-                                <span class="badge bg-success">Approved</span>
-                                {% else %}
-                                <span class="badge bg-warning text-dark">Pending</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if not company.is_approved %}
-                                <a href="{% url 'approve_company' company.id %}" class="btn btn-sm btn-success rounded-pill px-3">
-                                    <i class="bi bi-check-lg"></i> Approve
-                                </a>
-                                {% else %}
-                                <span class="text-muted small"><i class="bi bi-check-circle text-success"></i> Approved</span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr><td colspan="4" class="text-center py-4 text-muted">🏢 No companies registered</td></tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+            <div class="row g-3 mb-4">
+                <div class="col-md-3 fade-up">
+                    <div class="dash-stat">
+                        <div class="icon-circle" style="background: #EDE9FE; color: #7C3AED;"><i class="bi bi-people"></i></div>
+                        <h3>{{ total_users }}</h3>
+                        <div class="label">Users</div>
+                    </div>
+                </div>
+                <div class="col-md-3 fade-up">
+                    <div class="dash-stat">
+                        <div class="icon-circle" style="background: #EFF6FF; color: var(--primary);"><i class="bi bi-building"></i></div>
+                        <h3>{{ companies.count }}</h3>
+                        <div class="label">Companies</div>
+                    </div>
+                </div>
+                <div class="col-md-3 fade-up">
+                    <div class="dash-stat">
+                        <div class="icon-circle" style="background: #D1FAE5; color: var(--accent);"><i class="bi bi-briefcase"></i></div>
+                        <h3>{{ total_internships }}</h3>
+                        <div class="label">Internships</div>
+                    </div>
+                </div>
+                <div class="col-md-3 fade-up">
+                    <div class="dash-stat">
+                        <div class="icon-circle" style="background: #FEF3C7; color: var(--highlight);"><i class="bi bi-file-text"></i></div>
+                        <h3>{{ total_applications }}</h3>
+                        <div class="label">Applications</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-7">
+                    <div class="card fade-up">
+                        <div class="card-header bg-white fw-semibold">Company Approvals</div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead><tr><th>Company</th><th>User</th><th>Status</th><th>Action</th></tr></thead>
+                                    <tbody>
+                                        {% for company in companies %}
+                                        <tr>
+                                            <td class="fw-semibold">{{ company.company_name }}</td>
+                                            <td>{{ company.user.username }}</td>
+                                            <td>
+                                                {% if company.is_approved %}
+                                                <span class="badge bg-success">Approved</span>
+                                                {% else %}
+                                                <span class="badge bg-warning text-dark">Pending</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if not company.is_approved %}
+                                                <a href="{% url 'approve_company' company.id %}" class="btn btn-sm btn-success rounded-pill px-3">
+                                                    <i class="bi bi-check-lg"></i> Approve
+                                                </a>
+                                                {% else %}
+                                                <span class="text-muted small"><i class="bi bi-check-circle text-success"></i> Approved</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr><td colspan="4" class="text-center py-4">No companies registered yet.</td></tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="card fade-up">
+                        <div class="card-header bg-white fw-semibold d-flex justify-content-between">
+                            <span>Recent Registrations</span>
+                        </div>
+                        <div class="card-body p-0">
+                            <ul class="list-group list-group-flush">
+                                {% for company in companies|slice:":6" %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span class="small fw-semibold">{{ company.company_name }}</span>
+                                    <small class="text-muted">{{ company.user.date_joined|date:"M d" }}</small>
+                                </li>
+                                {% empty %}
+                                <li class="list-group-item text-center text-muted py-4">No registrations.</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card mt-3 fade-up">
+                        <div class="card-header bg-white fw-semibold d-flex justify-content-between">
+                            <span>Quick Actions</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <a href="{% url 'admin_applications' %}" class="btn btn-outline-primary">View All Applications</a>
+                                <a href="/admin/" class="btn btn-ghost">Django Admin Panel</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-
-    <div class="text-center mt-4">
-        <a href="{% url 'admin_applications' %}" class="btn btn-outline-primary rounded-pill px-4 me-2">View All Applications</a>
-        <a href="/admin/" class="btn btn-outline-secondary rounded-pill px-4">Django Admin</a>
     </div>
 </div>
+
 {% endblock %}

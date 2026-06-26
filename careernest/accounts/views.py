@@ -94,10 +94,14 @@ def student_dashboard(request):
     accepted = applications.filter(status='Accepted').count()
     rejected = applications.filter(status='Rejected').count()
     recent = applications.order_by('-applied_date')[:5]
+    applied_ids = applications.values_list('internship_id', flat=True)
+    recommended = Internship.objects.exclude(id__in=applied_ids).filter(
+        company__is_approved=True
+    )[:4]
     return render(request, 'accounts/student_dashboard.html', {
         'total_apps': total_apps, 'pending': pending,
         'accepted': accepted, 'rejected': rejected,
-        'applications': recent,
+        'applications': recent, 'recommended': recommended,
     })
 
 

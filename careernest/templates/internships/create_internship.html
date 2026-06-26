@@ -1,53 +1,55 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="row justify-content-center mt-4">
-    <div class="col-md-8">
-        <div class="card shadow border-0">
-            <div class="card-header bg-primary text-white py-3">
-                <h4 class="mb-0"><i class="bi bi-plus-circle"></i> Post a New Internship</h4>
-            </div>
-            <div class="card-body p-4">
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card p-4" style="border-top: 4px solid var(--primary);">
+                <div class="d-flex align-items-center gap-3 mb-4">
+                    <div class="icon-circle" style="background: #EFF6FF; color: var(--primary); width: 48px; height: 48px;"><i class="bi bi-plus-circle"></i></div>
+                    <div>
+                        <h4 class="fw-bold mb-0">Post an Internship</h4>
+                        <p class="text-muted mb-0" style="font-size: 0.9rem;">Create a new opportunity for students.</p>
+                    </div>
+                </div>
                 <form method="POST">
                     {% csrf_token %}
                     <div class="row g-3">
-                        <div class="col-md-12">
-                            <label class="form-label fw-semibold">Title</label>
-                            <input type="text" name="title" class="form-control" placeholder="e.g. Python Django Developer Intern" required>
+                        <div class="col-12">
+                            <label class="form-label">Title</label>
+                            <input type="text" name="title" class="form-control" placeholder="e.g. Python Developer Intern" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Description</label>
+                            <textarea name="description" class="form-control" rows="4" placeholder="Describe the internship role and responsibilities" required style="height: auto;"></textarea>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label fw-semibold">Location</label>
+                            <label class="form-label">Location</label>
                             <input type="text" name="location" class="form-control" placeholder="e.g. Kathmandu" required>
                         </div>
-                        <div class="col-md-3">
-                            <label class="form-label fw-semibold">Type</label>
+                        <div class="col-md-6">
+                            <label class="form-label">Type</label>
                             <select name="internship_type" class="form-select">
                                 <option value="onsite">On-site</option>
                                 <option value="remote">Remote</option>
                                 <option value="hybrid">Hybrid</option>
                             </select>
                         </div>
-                        <div class="col-md-3">
-                            <label class="form-label fw-semibold">Duration</label>
+                        <div class="col-md-6">
+                            <label class="form-label">Duration</label>
                             <input type="text" name="duration" class="form-control" placeholder="e.g. 3 months">
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label fw-semibold">Stipend</label>
+                            <label class="form-label">Stipend</label>
                             <input type="text" name="stipend" class="form-control" placeholder="e.g. Rs. 10,000/month">
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold">Skills Required</label>
-                            <input type="text" name="skills_required" class="form-control" placeholder="e.g. Python, Django, React">
-                        </div>
-                        <div class="col-md-12">
-                            <label class="form-label fw-semibold">Description</label>
-                            <textarea name="description" class="form-control" rows="6" placeholder="Describe the internship role, responsibilities, and requirements..." required></textarea>
+                        <div class="col-12">
+                            <label class="form-label">Skills Required</label>
+                            <input type="text" name="skills_required" class="form-control" placeholder="e.g. Python, Django, REST API">
                         </div>
                     </div>
                     <div class="d-flex gap-2 mt-4">
-                        <button type="submit" class="btn btn-primary px-4 rounded-pill">
-                            <i class="bi bi-send"></i> Post Internship
-                        </button>
-                        <a href="{% url 'company_dashboard' %}" class="btn btn-outline-secondary px-4 rounded-pill">Cancel</a>
+                        <button type="submit" class="btn btn-primary px-4 rounded-pill">Post Internship</button>
+                        <a href="{% url 'company_dashboard' %}" class="btn btn-ghost px-4 rounded-pill">Cancel</a>
                     </div>
                 </form>
             </div>

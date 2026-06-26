@@ -1,73 +1,74 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold mb-0"><i class="bi bi-list-ul text-primary"></i> Available Internships</h2>
-        {% if user.is_authenticated and user.company %}
-        <a href="{% url 'create_internship' %}" class="btn btn-primary shadow-sm rounded-pill px-4">
-            <i class="bi bi-plus-circle"></i> Post Internship
-        </a>
-        {% endif %}
-    </div>
 
-    <div class="card shadow-sm border-0 mb-4 fade-in">
-        <div class="card-body">
-            <form method="GET">
-                <div class="row g-2">
-                    <div class="col-md-4">
-                        <label class="form-label small fw-semibold text-muted"><i class="bi bi-search"></i> Search</label>
-                        <input type="text" name="q" class="form-control" placeholder="Title, description or skills..." value="{{ query }}">
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label small fw-semibold text-muted"><i class="bi bi-geo-alt"></i> Location</label>
-                        <select name="location" class="form-select">
-                            <option value="">All</option>
-                            {% for loc in locations %}
-                            <option value="{{ loc }}" {% if location == loc %}selected{% endif %}>{{ loc }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label small fw-semibold text-muted"><i class="bi bi-building"></i> Company</label>
-                        <select name="company" class="form-select">
-                            <option value="">All</option>
-                            {% for c in companies_list %}
-                            <option value="{{ c }}" {% if company == c %}selected{% endif %}>{{ c }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label small fw-semibold text-muted"><i class="bi bi-laptop"></i> Type</label>
-                        <select name="type" class="form-select">
-                            <option value="">All</option>
-                            <option value="remote" {% if internship_type == 'remote' %}selected{% endif %}>Remote</option>
-                            <option value="onsite" {% if internship_type == 'onsite' %}selected{% endif %}>On-site</option>
-                            <option value="hybrid" {% if internship_type == 'hybrid' %}selected{% endif %}>Hybrid</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2 d-flex align-items-end gap-1">
-                        <button class="btn btn-primary w-100"><i class="bi bi-funnel"></i> Filter</button>
-                        <a href="{% url 'internship_list' %}" class="btn btn-outline-secondary" title="Reset"><i class="bi bi-x-circle"></i></a>
-                    </div>
-                </div>
-            </form>
+<section class="py-4">
+    <div class="container">
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="section-title mb-0">Available Internships</h2>
+                <p class="section-subtitle">Find the perfect opportunity for your career growth.</p>
+            </div>
+            {% if user.company and not user.is_staff %}
+            <a href="{% url 'create_internship' %}" class="btn btn-primary rounded-pill px-4">
+                <i class="bi bi-plus-lg"></i> Post Internship
+            </a>
+            {% endif %}
         </div>
-    </div>
 
-    {% if query or location or company or internship_type %}
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <p class="text-muted mb-0"><i class="bi bi-funnel"></i> Filtered results</p>
-        <span class="badge bg-primary rounded-pill">{{ internships.count }} found</span>
-    </div>
-    {% endif %}
+        <!-- Search -->
+        <form method="GET" class="search-wrapper mb-4 fade-up">
+            <div class="row g-2 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label small fw-semibold text-muted mb-1">Search</label>
+                    <input type="text" name="q" class="form-control" placeholder="Internship title, skills..." value="{{ query }}">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small fw-semibold text-muted mb-1">Location</label>
+                    <select name="location" class="form-select">
+                        <option value="">All Locations</option>
+                        {% for loc in locations %}
+                        <option value="{{ loc }}" {% if location == loc %}selected{% endif %}>{{ loc }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small fw-semibold text-muted mb-1">Category</label>
+                    <select name="type" class="form-select">
+                        <option value="">All Types</option>
+                        <option value="remote" {% if type_filter == 'remote' %}selected{% endif %}>Remote</option>
+                        <option value="onsite" {% if type_filter == 'onsite' %}selected{% endif %}>On-site</option>
+                        <option value="hybrid" {% if type_filter == 'hybrid' %}selected{% endif %}>Hybrid</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn-search w-100"><i class="bi bi-search me-1"></i> Search</button>
+                </div>
+            </div>
+        </form>
 
-    <div class="row">
-        {% for internship in internships %}
-        <div class="col-md-4 mb-4 fade-in">
-            <div class="card card-scale shadow-sm h-100 border-0">
-                <div class="card-body d-flex flex-column">
-                    <div class="d-flex justify-content-between align-items-start mb-2">
-                        <h5 class="card-title fw-bold mb-0">{{ internship.title }}</h5>
+        {% if query or location or type_filter %}
+        <div class="mb-3">
+            <span class="badge bg-primary rounded-pill fs-6">{{ internships|length }} found</span>
+            <a href="{% url 'internship_list' %}" class="btn btn-ghost btn-sm ms-2 rounded-pill">
+                <i class="bi bi-x-lg"></i> Clear filters
+            </a>
+        </div>
+        {% endif %}
+
+        {% if internships %}
+        <div class="row g-4">
+            {% for internship in internships %}
+            <div class="col-lg-4 col-md-6 fade-up">
+                <div class="internship-card h-100 d-flex flex-column">
+                    <div class="d-flex align-items-start gap-3 mb-3">
+                        <div class="company-logo">{{ internship.company.company_name|first|upper }}</div>
+                        <div class="flex-grow-1">
+                            <h6 class="card-title">{{ internship.title }}</h6>
+                            <div class="company-name">{{ internship.company.company_name }}</div>
+                        </div>
+                        <button class="bookmark-btn" title="Save"><i class="bi bi-bookmark"></i></button>
+                    </div>
+                    <div class="d-flex flex-wrap gap-2 mb-3">
                         {% if internship.internship_type == 'remote' %}
                         <span class="badge bg-success">Remote</span>
                         {% elif internship.internship_type == 'hybrid' %}
@@ -75,33 +76,43 @@
                         {% else %}
                         <span class="badge bg-primary">On-site</span>
                         {% endif %}
+                        <span class="badge bg-light text-dark border">{{ internship.location }}</span>
                     </div>
-                    <p class="text-muted small mb-1"><i class="bi bi-building"></i> {{ internship.company.company_name }}</p>
-                    <p class="text-muted small mb-1"><i class="bi bi-geo-alt"></i> {{ internship.location }}</p>
                     {% if internship.skills_required %}
-                    <div class="mb-2">
-                        {% for skill in internship.skills_required|slice:":60" %}{% if not forloop.first and forloop.counter0|divisibleby:20 %}<br>{% endif %}{% endfor %}
-                        {% for s in internship.skills_required|slice:":100" %}
+                    <div class="d-flex flex-wrap gap-1 mb-3">
+                        {% for skill in internship.skills_required|slice:":3" %}
+                        <span class="badge" style="background: #EFF6FF; color: var(--primary);">{{ skill }}</span>
                         {% endfor %}
-                        {% for s in internship.skills_required|truncatechars:100 %}
-                        {% endfor %}
+                        {% if internship.skills_required|length > 3 %}
+                        <span class="badge bg-light text-muted">+{{ internship.skills_required|length|add:"-3" }}</span>
+                        {% endif %}
                     </div>
                     {% endif %}
-                    <p class="card-text flex-grow-1 small">{{ internship.description|truncatechars:100 }}</p>
-                    <a href="{% url 'internship_detail' internship.id %}" class="btn btn-outline-primary btn-sm mt-auto rounded-pill w-100">
-                        View Details & Apply <i class="bi bi-arrow-right"></i>
-                    </a>
+                    <div class="d-flex flex-wrap align-items-center gap-3 mb-3 mt-auto">
+                        {% if internship.stipend %}
+                        <span class="salary-text">${{ internship.stipend }}</span>
+                        {% endif %}
+                        {% if internship.duration %}
+                        <span class="meta-item"><i class="bi bi-clock"></i> {{ internship.duration }}</span>
+                        {% endif %}
+                        <span class="meta-item"><i class="bi bi-people"></i> {{ internship.applications.count }} Applied</span>
+                    </div>
+                    <a href="{% url 'internship_detail' internship.pk %}" class="btn btn-primary w-100">Apply Now</a>
                 </div>
             </div>
+            {% endfor %}
         </div>
-        {% empty %}
-        <div class="col-12 text-center py-5">
-            <div class="display-1 mb-3">🔍</div>
-            <h5 class="fw-bold text-muted">No internships found</h5>
-            <p class="text-muted">Try adjusting your search filters or check back later.</p>
-            <a href="{% url 'internship_list' %}" class="btn btn-primary rounded-pill px-4 mt-2"><i class="bi bi-arrow-clockwise"></i> Reset Filters</a>
+        {% else %}
+        <div class="empty-state fade-up">
+            <div class="emoji">🔍</div>
+            <h5>No internships found</h5>
+            <p>Try another keyword or adjust your filters.</p>
+            <a href="{% url 'internship_list' %}" class="btn btn-primary rounded-pill px-4 mt-2">
+                <i class="bi bi-arrow-clockwise me-1"></i> Reset Filters
+            </a>
         </div>
-        {% endfor %}
+        {% endif %}
     </div>
-</div>
+</section>
+
 {% endblock %}
